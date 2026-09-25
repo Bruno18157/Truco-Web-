@@ -165,6 +165,7 @@ function criarBaralho() {
     }
 
   }
+
 }
 
 
@@ -189,9 +190,9 @@ function embaralhar(array) {
       array[i],
       array[j]
     ] = [
-      array[j],
-      array[i]
-    ];
+        array[j],
+        array[i]
+      ];
 
   }
 
@@ -231,18 +232,34 @@ function novaRodada() {
     deck.shift();
 
 
+  /* =================================
+     CALCULAR MANILHA
+     
+     Sequência:
+     4 → 5
+     5 → 6
+     6 → 7
+     7 → Q
+     Q → J
+     J → K
+     K → A
+     A → 2
+     2 → 3
+     3 → 4
+  ================================= */
+
+  const indiceVirada =
+    valores.findIndex(
+      v => v.valor === cartaVirada.valor
+    );
+
+
+  const proximoIndice =
+    (indiceVirada + 1) % valores.length;
+
+
   manilhaValor =
-    cartaVirada.valor + 1;
-
-
-  if (manilhaValor === 11)
-    manilhaValor = 12;
-
-  if (manilhaValor === 13)
-    manilhaValor = 14;
-
-  if (manilhaValor === 16)
-    manilhaValor = 4;
+    valores[proximoIndice].valor;
 
 
   cartaJogador = null;
@@ -273,6 +290,7 @@ function novaRodada() {
 
 
   log("Nova rodada começou.");
+
 
   log(
     "Virada: " +
@@ -317,6 +335,7 @@ function getManilhaNome() {
   return carta
     ? carta.nome
     : "?";
+
 }
 
 
@@ -342,6 +361,7 @@ function forcaCarta(carta) {
 
     };
 
+
     return (
       100 +
       forcaNaipe[carta.naipe]
@@ -349,7 +369,9 @@ function forcaCarta(carta) {
 
   }
 
+
   return carta.valor;
+
 }
 
 
@@ -365,8 +387,10 @@ function criarCartaHTML(
   const button =
     document.createElement("button");
 
+
   button.className =
     "card " + carta.cor;
+
 
   button.type = "button";
 
@@ -395,6 +419,7 @@ function criarCartaHTML(
 
 
   return button;
+
 }
 
 
@@ -407,10 +432,13 @@ function criarCartaEscondida() {
   const div =
     document.createElement("div");
 
+
   div.className =
     "card card-back";
 
+
   return div;
+
 }
 
 
@@ -464,6 +492,7 @@ function atualizarTela() {
 
       );
 
+
     playerCardsEl.appendChild(el);
 
   });
@@ -492,9 +521,11 @@ function atualizarTela() {
         cartaJogador
       );
 
+
     el.classList.add(
       "played-card"
     );
+
 
     playedCardsEl.appendChild(el);
 
@@ -508,9 +539,11 @@ function atualizarTela() {
         cartaComputador
       );
 
+
     el.classList.add(
       "played-card"
     );
+
 
     playedCardsEl.appendChild(el);
 
@@ -595,6 +628,7 @@ function jogarCarta(carta) {
 
     turno = "computador";
 
+
     setTimeout(
       jogadaComputador,
       600
@@ -643,6 +677,7 @@ function jogadaComputador() {
           forcaCarta(b)
       );
 
+
       cartaEscolhida =
         vencedoras[0];
 
@@ -650,10 +685,10 @@ function jogadaComputador() {
 
       cartaEscolhida =
         computador[
-          Math.floor(
-            Math.random() *
-            computador.length
-          )
+        Math.floor(
+          Math.random() *
+          computador.length
+        )
         ];
 
     }
@@ -682,10 +717,10 @@ function jogadaComputador() {
 
     cartaEscolhida =
       computador[
-        Math.floor(
-          Math.random() *
-          computador.length
-        )
+      Math.floor(
+        Math.random() *
+        computador.length
+      )
       ];
 
   }
@@ -729,8 +764,10 @@ function jogadaComputador() {
 
     turno = "jogador";
 
+
     statusEl.textContent =
       "Sua vez.";
+
 
     atualizarTela();
 
@@ -748,6 +785,7 @@ function resolverVaza() {
   const forcaJogador =
     forcaCarta(cartaJogador);
 
+
   const forcaComputador =
     forcaCarta(cartaComputador);
 
@@ -762,14 +800,18 @@ function resolverVaza() {
 
     vencedor = "jogador";
 
-  } else if (
+  }
+
+  else if (
     forcaComputador >
     forcaJogador
   ) {
 
     vencedor = "computador";
 
-  } else {
+  }
+
+  else {
 
     vencedor = "empate";
 
@@ -780,8 +822,10 @@ function resolverVaza() {
 
     jogadorVazas++;
 
+
     statusEl.textContent =
       "🏆 Você ganhou a vaza!";
+
 
     log(
       "Você ganhou a vaza."
@@ -795,8 +839,10 @@ function resolverVaza() {
 
     computadorVazas++;
 
+
     statusEl.textContent =
       "Computador ganhou.";
+
 
     log(
       "Computador ganhou a vaza."
@@ -808,6 +854,7 @@ function resolverVaza() {
 
     statusEl.textContent =
       "Empate!";
+
 
     log(
       "Vaza empatada."
@@ -860,6 +907,7 @@ function resolverVaza() {
 
       statusEl.textContent =
         "Computador joga.";
+
 
       setTimeout(
         jogadaComputador,
@@ -917,8 +965,10 @@ function finalizarRodada() {
     pontosJogador +=
       valorRodada;
 
+
     statusEl.textContent =
       `Você ganhou! +${valorRodada}`;
+
 
     log(
       `Você ganhou ${valorRodada} ponto(s).`
@@ -933,8 +983,10 @@ function finalizarRodada() {
     pontosComputador +=
       valorRodada;
 
+
     statusEl.textContent =
       `Computador ganhou. +${valorRodada}`;
+
 
     log(
       `Computador ganhou ${valorRodada} ponto(s).`
@@ -946,6 +998,7 @@ function finalizarRodada() {
 
     statusEl.textContent =
       "Rodada empatada.";
+
 
     log(
       "Rodada empatada."
@@ -990,13 +1043,17 @@ function proximoValorTruco() {
   if (valorRodada === 1)
     return 3;
 
+
   if (valorRodada === 3)
     return 6;
+
 
   if (valorRodada === 6)
     return 9;
 
+
   return 12;
+
 }
 
 
@@ -1017,6 +1074,7 @@ function pedirTruco() {
 
     statusEl.textContent =
       "Já está valendo 12!";
+
 
     return;
 
@@ -1056,12 +1114,15 @@ function pedirTruco() {
       valorRodada =
         novoValor;
 
+
       statusEl.textContent =
         `Aceitou! Vale ${valorRodada}.`;
+
 
       log(
         `Computador aceitou.`
       );
+
 
       atualizarTela();
 
@@ -1122,6 +1183,7 @@ function computadorPedeTruco() {
   acceptBtn.style.display =
     "inline-block";
 
+
   runBtn.style.display =
     "inline-block";
 
@@ -1150,6 +1212,7 @@ function aceitarTruco() {
 
   acceptBtn.style.display =
     "none";
+
 
   runBtn.style.display =
     "none";
@@ -1187,6 +1250,7 @@ function correr() {
 
   acceptBtn.style.display =
     "none";
+
 
   runBtn.style.display =
     "none";
@@ -1239,6 +1303,7 @@ function finalizarJogo() {
     statusEl.textContent =
       "VOCÊ VENCEU!";
 
+
     log(
       "Você venceu a partida!"
     );
@@ -1249,6 +1314,7 @@ function finalizarJogo() {
 
     statusEl.textContent =
       "COMPUTADOR VENCEU!";
+
 
     log(
       "Computador venceu a partida."
