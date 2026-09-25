@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truco Web!</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="game">
+
+        <!-- =========================
+         MESA PRINCIPAL
+    ========================== -->
+
+        <section class="table">
+
+            <!-- COMPUTADOR -->
+
+            <div class="area computer-area">
+
+                <div class="area-title">
+                    Computador
+                </div>
+
+                <div class="cards" id="computerCards">
+                </div>
+
+            </div>
+
+
+            <!-- VAZA -->
+
+            <div class="area middle-area">
+
+                <div class="area-title">
+                    Vaza atual
+                    <span id="roundValue"></span>
+                </div>
+
+                <div class="played" id="playedCards">
+                </div>
+
+            </div>
+
+
+            <!-- JOGADOR -->
+
+            <div class="area player-area">
+
+                <div class="area-title">
+                    Suas cartas
+                </div>
+
+                <div class="cards" id="playerCards">
+                </div>
+
+            </div>
+
+
+            <!-- AÇÕES -->
+
+            <div class="actions">
+
+                <button class="action truco" id="trucoBtn">
+
+                    TRUCO!
+
+                </button>
+
+
+                <button class="action" id="acceptBtn" style="display:none">
+
+                    Aceitar
+
+                </button>
+
+
+                <button class="action" id="runBtn" style="display:none">
+
+                    Correr
+
+                </button>
+
+
+                <button class="action" id="newGameBtn" style="display:none">
+
+                    Nova partida
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+         PAINEL LATERAL
+    ========================== -->
+
+        <aside class="side-panel">
+
+            <h1>Truco Web!</h1>
+
+
+            <!-- PLACAR -->
+
+            <div class="scoreboard">
+
+                <div class="score player-score">
+
+                    <span>Você</span>
+
+                    <strong id="playerScore">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="score computer-score">
+
+                    <span>Computador</span>
+
+                    <strong id="computerScore">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="info-box">
+
+                <div class="info-title">
+                    STATUS
+                </div>
+
+                <div class="status" id="status">
+
+                    Carregando...
+
+                </div>
+
+            </div>
+
+
+            <!-- VALOR -->
+
+            <div class="info-box">
+
+                <div class="info-title">
+                    VALOR DA RODADA
+                </div>
+
+                <div class="round-info" id="sideRoundValue">
+
+                    1 ponto
+
+                </div>
+
+            </div>
+
+
+            <!-- LOG -->
+
+            <div class="info-box log-box">
+
+                <div class="info-title">
+                    INFORMAÇÕES
+                </div>
+
+                <div class="log" id="log">
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
