@@ -785,10 +785,8 @@ function resolverVaza() {
   const forcaJogador =
     forcaCarta(cartaJogador);
 
-
   const forcaComputador =
     forcaCarta(cartaComputador);
-
 
   let vencedor;
 
@@ -818,14 +816,18 @@ function resolverVaza() {
   }
 
 
+  /* ================================
+     CONTABILIZAR A VAZA
+  ================================= */
+
   if (vencedor === "jogador") {
 
     jogadorVazas++;
 
+    vencedorUltimaVaza = "jogador";
 
     statusEl.textContent =
       "Você ganhou a vaza!";
-
 
     log(
       "Você ganhou a vaza."
@@ -839,10 +841,10 @@ function resolverVaza() {
 
     computadorVazas++;
 
+    vencedorUltimaVaza = "computador";
 
     statusEl.textContent =
       "Computador ganhou.";
-
 
     log(
       "Computador ganhou a vaza."
@@ -853,8 +855,7 @@ function resolverVaza() {
   else {
 
     statusEl.textContent =
-      "Empate!";
-
+      "Vaza empatada.";
 
     log(
       "Vaza empatada."
@@ -873,18 +874,9 @@ function resolverVaza() {
     cartaComputador = null;
 
 
-    if (
-      vencedor === "computador"
-    ) {
-
-      turno = "computador";
-
-    } else {
-
-      turno = "jogador";
-
-    }
-
+    /* ================================
+       VERIFICAR SE A RODADA TERMINOU
+    ================================= */
 
     if (
       jogadorVazas >= 2 ||
@@ -894,6 +886,53 @@ function resolverVaza() {
       finalizarRodada();
 
       return;
+
+    }
+
+
+    /* ================================
+       DEFINIR QUEM COMEÇA A PRÓXIMA VAZA
+
+       Se empatou, quem ganhou a vaza
+       anterior continua sendo a referência.
+    ================================= */
+
+    if (vencedor === "jogador") {
+
+      turno = "jogador";
+
+    }
+
+    else if (
+      vencedor === "computador"
+    ) {
+
+      turno = "computador";
+
+    }
+
+    else if (
+      vencedorUltimaVaza === "jogador"
+    ) {
+
+      turno = "jogador";
+
+    }
+
+    else if (
+      vencedorUltimaVaza === "computador"
+    ) {
+
+      turno = "computador";
+
+    }
+
+    else {
+
+      // Caso o primeiro confronto da rodada
+      // tenha empatado, mantém o jogador.
+
+      turno = "jogador";
 
     }
 
@@ -908,13 +947,14 @@ function resolverVaza() {
       statusEl.textContent =
         "Computador joga.";
 
-
       setTimeout(
         jogadaComputador,
         600
       );
 
-    } else {
+    }
+
+    else {
 
       statusEl.textContent =
         "Sua vez.";
@@ -924,6 +964,7 @@ function resolverVaza() {
   }, 900);
 
 }
+
 
 
 /* =================================
