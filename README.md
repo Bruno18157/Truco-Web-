@@ -19,7 +19,7 @@ Um jogo de Truco simples e responsivo desenvolvido para navegadores, onde o usu√
 
 1. Clone este reposit√≥rio:
    ```bash
-   git clone https://github.com
+   git clone https://github.com/Bruno18157/Truco-Web-.git
    ```
 2. Abra a pasta do projeto.
 3. Clique duas vezes no arquivo `index.html` para jogar direto no seu navegador.

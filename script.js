@@ -304,7 +304,7 @@ function novaRodada() {
   if (turno === "computador") {
 
     statusEl.textContent =
-      "🤖 Computador começa.";
+      "Computador começa.";
 
     setTimeout(
       jogadaComputador,
@@ -824,7 +824,7 @@ function resolverVaza() {
 
 
     statusEl.textContent =
-      "🏆 Você ganhou a vaza!";
+      "Você ganhou a vaza!";
 
 
     log(
