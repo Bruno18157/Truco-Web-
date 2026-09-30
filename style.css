@@ -197,6 +197,36 @@ button.action:disabled {
     box-shadow: 0 3px 0 #801313 !important;
 }
 
+.mute-music-btn {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, background 0.2s;
+    z-index: 9999;
+}
+
+.mute-music-btn:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.mute-music-btn:active {
+    transform: scale(0.95);
+}
+
+
 /* =================================
    PAINEL LATERAL
 ================================= */
@@ -373,6 +403,7 @@ button.action:disabled {
 ================================= */
 
 @media (max-width: 600px) {
+
     html,
     body {
         overflow: auto;

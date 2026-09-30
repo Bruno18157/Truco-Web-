@@ -14,21 +14,27 @@
     <main class="game">
         <!-- ========================= MESA PRINCIPAL ========================== -->
         <section class="table">
+
             <!-- COMPUTADOR -->
             <div class="area computer-area">
                 <div class="area-title">Computador</div>
                 <div class="cards" id="computerCards"></div>
             </div>
+
             <!-- VAZA -->
             <div class="area middle-area">
-                <div class="area-title">Vaza atual <span id="roundValue"></span></div>
+                <div class="area-title">
+                    Vaza atual <span id="roundValue"></span>
+                </div>
                 <div class="played" id="playedCards"></div>
             </div>
+
             <!-- JOGADOR -->
             <div class="area player-area">
                 <div class="area-title">Suas cartas</div>
                 <div class="cards" id="playerCards"></div>
             </div>
+
             <!-- AÇÕES -->
             <div class="actions">
                 <button class="action truco" id="trucoBtn">TRUCO!</button>
@@ -36,39 +42,81 @@
                 <button class="action" id="runBtn" style="display:none">Correr</button>
                 <button class="action" id="newGameBtn" style="display:none">Nova partida</button>
             </div>
+
         </section>
+
         <!-- ========================= PAINEL LATERAL ========================== -->
         <aside class="side-panel">
+
             <h1>Truco Web!</h1>
+
             <!-- PLACAR -->
             <div class="scoreboard">
+
                 <div class="score player-score">
                     <span>Você</span>
                     <strong id="playerScore">0</strong>
                 </div>
+
                 <div class="score computer-score">
                     <span>Computador</span>
                     <strong id="computerScore">0</strong>
                 </div>
+
             </div>
+
             <!-- STATUS -->
             <div class="info-box">
                 <div class="info-title">STATUS</div>
                 <div class="status" id="status">Carregando...</div>
             </div>
+
             <!-- VALOR -->
             <div class="info-box">
                 <div class="info-title">VALOR DA RODADA</div>
                 <div class="round-info" id="sideRoundValue">1 ponto</div>
             </div>
+
             <!-- LOG -->
             <div class="info-box log-box">
                 <div class="info-title">INFORMAÇÕES</div>
                 <div class="log" id="log"></div>
             </div>
+
         </aside>
     </main>
+
+
+    <!-- ========================= ÁUDIOS ========================== -->
+
+    <!-- Música ambiente -->
+    <audio id="musicaAmbiente" loop>
+        <source src="assets/music/casino-vip-music-vip-casino-music-7-469284.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Efeitos das cartas -->
+    <audio id="somCarta1">
+        <source src="assets/sounds/oxidvideos-taking-playing-card-522520.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="somCarta2">
+        <source src="assets/sounds/oxidvideos-taking-playing-card-2-522516.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="somCarta3">
+        <source src="assets/sounds/oxidvideos-taking-playing-card-3-522513.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="somTruco">
+        <source src="assets/sounds/freesound_community-winner-bell-game-show-91932.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="muteMusicBtn" class="mute-music-btn" aria-label="Mutar música">
+        🔊
+    </button>
+
     <script src="script.js"></script>
+
 </body>
 
 </html>

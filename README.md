@@ -17,6 +17,7 @@ Um jogo de Truco simples e responsivo desenvolvido para navegadores, onde o usu�
 - Sistema de pontuação até 12 pontos.
 - IA com tomada de decisão e truco.
 - Interface adaptada para diversos dispositivos.
+- Música de fundo e efeitos sonoros.
 
 ## 🚀 Como Executar Localmente
 1. Clone o repositório: `git clone https://github.com/Bruno18157/Truco-Web-.git`
