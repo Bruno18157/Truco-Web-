@@ -25,7 +25,6 @@ const naipes = [
   }
 ];
 
-
 const valores = [
   { nome: "4", valor: 4 },
   { nome: "5", valor: 5 },
@@ -40,13 +39,16 @@ const valores = [
 ];
 
 
+/* =================================
+   ESTADO DO JOGO
+================================= */
+
 let deck = [];
 
 let jogador = [];
 let computador = [];
 
 let cartaVirada = null;
-
 let manilhaValor = null;
 
 let cartaJogador = null;
@@ -54,6 +56,66 @@ let cartaComputador = null;
 
 let jogadorVazas = 0;
 let computadorVazas = 0;
+
+
+/*
+  Guarda quem venceu a última vaza.
+
+  Pode ser:
+  "jogador"
+  "computador"
+  null
+
+  IMPORTANTE:
+  Em caso de empate, NÃO alteramos esse valor.
+*/
+let vencedorUltimaVaza = null;
+
+
+/*
+  Guarda quem venceu a primeira vaza.
+
+  Pode ser:
+  "jogador"
+  "computador"
+  "empate"
+*/
+let vencedorPrimeiraVaza = null;
+
+
+/*
+  Número de vazas concluídas.
+*/
+let numeroVaza = 0;
+
+
+/*
+  Guarda o resultado de CADA vaza.
+
+  Exemplos:
+
+  [
+    "jogador",
+    "empate",
+    "jogador"
+  ]
+
+  ou:
+
+  [
+    "empate",
+    "empate",
+    "empate"
+  ]
+*/
+let resultadosVazas = [];
+
+
+/*
+  Define quem começa a próxima mão.
+*/
+let proximoComeca = "jogador";
+
 
 let pontosJogador = 0;
 let pontosComputador = 0;
@@ -63,6 +125,16 @@ let valorRodada = 1;
 let turno = "jogador";
 
 let esperandoTruco = false;
+
+
+/*
+  Guarda quem pediu o truco.
+
+  Pode ser:
+  "jogador"
+  "computador"
+*/
+let trucoSolicitante = null;
 
 let jogoTerminou = false;
 
@@ -149,17 +221,11 @@ function criarBaralho() {
     for (const valor of valores) {
 
       deck.push({
-
         nome: valor.nome,
-
         valor: valor.valor,
-
         naipe: naipe.nome,
-
         simbolo: naipe.simbolo,
-
         cor: naipe.cor
-
       });
 
     }
@@ -190,9 +256,9 @@ function embaralhar(array) {
       array[i],
       array[j]
     ] = [
-        array[j],
-        array[i]
-      ];
+      array[j],
+      array[i]
+    ];
 
   }
 
@@ -213,6 +279,7 @@ function novaRodada() {
     finalizarJogo();
 
     return;
+
   }
 
 
@@ -234,8 +301,7 @@ function novaRodada() {
 
   /* =================================
      CALCULAR MANILHA
-     
-     Sequência:
+
      4 → 5
      5 → 6
      6 → 7
@@ -262,35 +328,63 @@ function novaRodada() {
     valores[proximoIndice].valor;
 
 
-  cartaJogador = null;
+  /* =================================
+     RESET DA MÃO
+  ================================= */
 
+  cartaJogador = null;
   cartaComputador = null;
 
-
   jogadorVazas = 0;
-
   computadorVazas = 0;
 
+  vencedorUltimaVaza = null;
+
+  vencedorPrimeiraVaza = null;
+
+  numeroVaza = 0;
+
+  resultadosVazas = [];
 
   valorRodada = 1;
 
 
-  turno =
-    Math.random() < 0.5
-      ? "jogador"
-      : "computador";
+  /*
+    Define quem começa a mão.
+  */
+
+  turno = proximoComeca;
+
+
+  /*
+    Alterna para a próxima mão.
+  */
+
+  proximoComeca =
+    proximoComeca === "jogador"
+      ? "computador"
+      : "jogador";
 
 
   esperandoTruco = false;
+  trucoSolicitante = null;
 
   jogoTerminou = false;
+
+
+  acceptBtn.style.display =
+    "none";
+
+  runBtn.style.display =
+    "none";
 
 
   atualizarTela();
 
 
-  log("Nova rodada começou.");
-
+  log(
+    "Nova rodada começou."
+  );
 
   log(
     "Virada: " +
@@ -301,7 +395,9 @@ function novaRodada() {
   );
 
 
-  if (turno === "computador") {
+  if (
+    turno === "computador"
+  ) {
 
     statusEl.textContent =
       "Computador começa.";
@@ -311,7 +407,9 @@ function novaRodada() {
       700
     );
 
-  } else {
+  }
+
+  else {
 
     statusEl.textContent =
       "Sua vez.";
@@ -352,15 +450,11 @@ function forcaCarta(carta) {
     const forcaNaipe = {
 
       "Ouros": 1,
-
       "Espadas": 2,
-
       "Copas": 3,
-
       "Paus": 4
 
     };
-
 
     return (
       100 +
@@ -368,7 +462,6 @@ function forcaCarta(carta) {
     );
 
   }
-
 
   return carta.valor;
 
@@ -387,16 +480,12 @@ function criarCartaHTML(
   const button =
     document.createElement("button");
 
-
   button.className =
     "card " + carta.cor;
 
-
   button.type = "button";
 
-
   button.innerHTML = `
-
     <span class="rank">
       ${carta.nome}
     </span>
@@ -404,7 +493,6 @@ function criarCartaHTML(
     <span class="suit">
       ${carta.simbolo}
     </span>
-
   `;
 
 
@@ -432,10 +520,8 @@ function criarCartaEscondida() {
   const div =
     document.createElement("div");
 
-
   div.className =
     "card card-back";
-
 
   return div;
 
@@ -455,13 +541,14 @@ function atualizarTela() {
     pontosComputador;
 
 
-  /* Valor da rodada */
+  /* =================================
+     VALOR DA RODADA
+  ================================= */
 
   roundValueEl.textContent =
     valorRodada > 1
       ? `(${valorRodada})`
       : "";
-
 
   sideRoundValueEl.textContent =
     valorRodada === 1
@@ -469,36 +556,37 @@ function atualizarTela() {
       : `${valorRodada} pontos`;
 
 
-  /* Limpar cartas */
+  /* =================================
+     LIMPAR CARTAS
+  ================================= */
 
   playerCardsEl.innerHTML = "";
-
   computerCardsEl.innerHTML = "";
 
 
-  /* Cartas do jogador */
+  /* =================================
+     CARTAS DO JOGADOR
+  ================================= */
 
   jogador.forEach(carta => {
 
     const el =
       criarCartaHTML(
-
         carta,
-
         turno === "jogador" &&
         !cartaJogador &&
         !esperandoTruco &&
         !jogoTerminou
-
       );
-
 
     playerCardsEl.appendChild(el);
 
   });
 
 
-  /* Cartas do computador */
+  /* =================================
+     CARTAS DO COMPUTADOR
+  ================================= */
 
   computador.forEach(() => {
 
@@ -509,7 +597,9 @@ function atualizarTela() {
   });
 
 
-  /* Cartas jogadas */
+  /* =================================
+     CARTAS JOGADAS
+  ================================= */
 
   playedCardsEl.innerHTML = "";
 
@@ -521,11 +611,9 @@ function atualizarTela() {
         cartaJogador
       );
 
-
     el.classList.add(
       "played-card"
     );
-
 
     playedCardsEl.appendChild(el);
 
@@ -539,26 +627,29 @@ function atualizarTela() {
         cartaComputador
       );
 
-
     el.classList.add(
       "played-card"
     );
-
 
     playedCardsEl.appendChild(el);
 
   }
 
 
-  /* Botão truco */
+  /* =================================
+     BOTÃO TRUCO
+  ================================= */
 
   trucoBtn.disabled =
     jogoTerminou ||
     esperandoTruco ||
-    turno !== "jogador";
+    turno !== "jogador" ||
+    valorRodada >= 12;
 
 
-  /* Botões do truco */
+  /* =================================
+     BOTÕES DE RESPOSTA
+  ================================= */
 
   if (!esperandoTruco) {
 
@@ -595,8 +686,11 @@ function jogarCarta(carta) {
     jogador.indexOf(carta);
 
 
-  if (index === -1)
+  if (index === -1) {
+
     return;
+
+  }
 
 
   jogador.splice(
@@ -604,9 +698,7 @@ function jogarCarta(carta) {
     1
   );
 
-
-  cartaJogador =
-    carta;
+  cartaJogador = carta;
 
 
   log(
@@ -620,14 +712,20 @@ function jogarCarta(carta) {
   atualizarTela();
 
 
+  /*
+    Se o computador já tinha jogado,
+    resolve a vaza.
+  */
+
   if (cartaComputador) {
 
     resolverVaza();
 
-  } else {
+  }
+
+  else {
 
     turno = "computador";
-
 
     setTimeout(
       jogadaComputador,
@@ -659,6 +757,10 @@ function jogadaComputador() {
   let cartaEscolhida;
 
 
+  /* =================================
+     COMPUTADOR RESPONDE À CARTA
+  ================================= */
+
   if (cartaJogador) {
 
     const vencedoras =
@@ -669,7 +771,9 @@ function jogadaComputador() {
       );
 
 
-    if (vencedoras.length > 0) {
+    if (
+      vencedoras.length > 0
+    ) {
 
       vencedoras.sort(
         (a, b) =>
@@ -677,23 +781,31 @@ function jogadaComputador() {
           forcaCarta(b)
       );
 
-
       cartaEscolhida =
         vencedoras[0];
 
-    } else {
+    }
+
+    else {
 
       cartaEscolhida =
         computador[
-        Math.floor(
-          Math.random() *
-          computador.length
-        )
+          Math.floor(
+            Math.random() *
+            computador.length
+          )
         ];
 
     }
 
-  } else {
+  }
+
+
+  /* =================================
+     COMPUTADOR COMEÇA A VAZA
+  ================================= */
+
+  else {
 
     const fortes =
       computador.filter(
@@ -701,6 +813,12 @@ function jogadaComputador() {
           forcaCarta(c) >= 14
       );
 
+
+    /*
+      O computador pode pedir truco
+      somente se ainda não estiver
+      valendo 12.
+    */
 
     if (
       fortes.length > 0 &&
@@ -717,19 +835,30 @@ function jogadaComputador() {
 
     cartaEscolhida =
       computador[
-      Math.floor(
-        Math.random() *
-        computador.length
-      )
+        Math.floor(
+          Math.random() *
+          computador.length
+        )
       ];
 
   }
 
 
+  /* =================================
+     JOGAR CARTA
+  ================================= */
+
   const index =
     computador.indexOf(
       cartaEscolhida
     );
+
+
+  if (index === -1) {
+
+    return;
+
+  }
 
 
   computador.splice(
@@ -753,21 +882,23 @@ function jogadaComputador() {
   atualizarTela();
 
 
-  if (cartaJogador) {
+  if (
+    cartaJogador
+  ) {
 
     setTimeout(
       resolverVaza,
       600
     );
 
-  } else {
+  }
+
+  else {
 
     turno = "jogador";
 
-
     statusEl.textContent =
       "Sua vez.";
-
 
     atualizarTela();
 
@@ -782,14 +913,29 @@ function jogadaComputador() {
 
 function resolverVaza() {
 
+  if (
+    !cartaJogador ||
+    !cartaComputador
+  ) {
+
+    return;
+
+  }
+
+
   const forcaJogador =
     forcaCarta(cartaJogador);
 
   const forcaComputador =
     forcaCarta(cartaComputador);
 
+
   let vencedor;
 
+
+  /* =================================
+     DESCOBRIR VENCEDOR DA VAZA
+  ================================= */
 
   if (
     forcaJogador >
@@ -816,21 +962,69 @@ function resolverVaza() {
   }
 
 
-  /* ================================
+  /*
+    Incrementa o número da vaza.
+  */
+
+  numeroVaza++;
+
+
+  /*
+    REGISTRA EXATAMENTE O RESULTADO
+    DESTA VAZA.
+
+    Exemplo:
+
+    1ª = jogador
+    2ª = empate
+    3ª = jogador
+
+    resultadosVazas será:
+
+    [
+      "jogador",
+      "empate",
+      "jogador"
+    ]
+  */
+
+  resultadosVazas.push(
+    vencedor
+  );
+
+
+  /*
+    Guarda o vencedor da primeira vaza.
+  */
+
+  if (
+    numeroVaza === 1
+  ) {
+
+    vencedorPrimeiraVaza =
+      vencedor;
+
+  }
+
+
+  /* =================================
      CONTABILIZAR A VAZA
   ================================= */
 
-  if (vencedor === "jogador") {
+  if (
+    vencedor === "jogador"
+  ) {
 
     jogadorVazas++;
 
-    vencedorUltimaVaza = "jogador";
+    vencedorUltimaVaza =
+      "jogador";
 
     statusEl.textContent =
       "Você ganhou a vaza!";
 
     log(
-      "Você ganhou a vaza."
+      `Você ganhou a ${numeroVaza}ª vaza.`
     );
 
   }
@@ -841,24 +1035,32 @@ function resolverVaza() {
 
     computadorVazas++;
 
-    vencedorUltimaVaza = "computador";
+    vencedorUltimaVaza =
+      "computador";
 
     statusEl.textContent =
-      "Computador ganhou.";
+      "Computador ganhou a vaza.";
 
     log(
-      "Computador ganhou a vaza."
+      `Computador ganhou a ${numeroVaza}ª vaza.`
     );
 
   }
 
   else {
 
+    /*
+      NÃO alteramos vencedorUltimaVaza.
+
+      O resultado real do empate já está
+      guardado em resultadosVazas.
+    */
+
     statusEl.textContent =
       "Vaza empatada.";
 
     log(
-      "Vaza empatada."
+      `A ${numeroVaza}ª vaza empatou.`
     );
 
   }
@@ -870,34 +1072,56 @@ function resolverVaza() {
   setTimeout(() => {
 
     cartaJogador = null;
-
     cartaComputador = null;
 
 
-    /* ================================
-       VERIFICAR SE A RODADA TERMINOU
+    /* =================================
+       VERIFICAR VENCEDOR DA MÃO
     ================================= */
 
+    const vencedorMao =
+      determinarVencedorMao();
+
+
     if (
-      jogadorVazas >= 2 ||
-      computadorVazas >= 2
+      vencedorMao
     ) {
 
-      finalizarRodada();
+      finalizarRodada(
+        vencedorMao
+      );
 
       return;
 
     }
 
 
-    /* ================================
-       DEFINIR QUEM COMEÇA A PRÓXIMA VAZA
+    /*
+      Se chegou à terceira vaza
+      e ainda não existe vencedor,
+      as três vazas foram empate.
+    */
 
-       Se empatou, quem ganhou a vaza
-       anterior continua sendo a referência.
+    if (
+      numeroVaza >= 3
+    ) {
+
+      finalizarRodada(
+        "empate"
+      );
+
+      return;
+
+    }
+
+
+    /* =================================
+       DEFINIR QUEM COMEÇA A PRÓXIMA VAZA
     ================================= */
 
-    if (vencedor === "jogador") {
+    if (
+      vencedor === "jogador"
+    ) {
 
       turno = "jogador";
 
@@ -911,28 +1135,47 @@ function resolverVaza() {
 
     }
 
-    else if (
-      vencedorUltimaVaza === "jogador"
-    ) {
-
-      turno = "jogador";
-
-    }
-
-    else if (
-      vencedorUltimaVaza === "computador"
-    ) {
-
-      turno = "computador";
-
-    }
-
     else {
 
-      // Caso o primeiro confronto da rodada
-      // tenha empatado, mantém o jogador.
+      /*
+        Se a vaza empatou, quem ganhou
+        a vaza anterior começa.
 
-      turno = "jogador";
+        Se ainda não houve vencedor,
+        mantém quem começou a mão.
+      */
+
+      if (
+        vencedorUltimaVaza === "jogador"
+      ) {
+
+        turno = "jogador";
+
+      }
+
+      else if (
+        vencedorUltimaVaza === "computador"
+      ) {
+
+        turno = "computador";
+
+      }
+
+      else {
+
+        /*
+          A primeira vaza foi empate.
+
+          Nesse caso, mantém o jogador
+          que começou a mão.
+        */
+
+        turno =
+          proximoComeca === "jogador"
+            ? "computador"
+            : "jogador";
+
+      }
 
     }
 
@@ -966,56 +1209,358 @@ function resolverVaza() {
 }
 
 
+/* =================================
+   DETERMINAR VENCEDOR DA MÃO
+================================= */
+
+function determinarVencedorMao() {
+
+  /*
+    Se não existe vaza,
+    não há vencedor.
+  */
+
+  if (
+    resultadosVazas.length === 0
+  ) {
+
+    return null;
+
+  }
+
+
+  const primeira =
+    resultadosVazas[0];
+
+
+  /* =================================
+     SEGUNDA VAZA
+  ================================= */
+
+  if (
+    resultadosVazas.length >= 2
+  ) {
+
+    const segunda =
+      resultadosVazas[1];
+
+
+    /*
+      =================================
+      1ª EMPATOU + 2ª JOGADOR
+      =================================
+
+      Jogador ganha imediatamente.
+    */
+
+    if (
+      primeira === "empate" &&
+      segunda === "jogador"
+    ) {
+
+      return "jogador";
+
+    }
+
+
+    /*
+      =================================
+      1ª EMPATOU + 2ª COMPUTADOR
+      =================================
+    */
+
+    if (
+      primeira === "empate" &&
+      segunda === "computador"
+    ) {
+
+      return "computador";
+
+    }
+
+
+    /*
+      =================================
+      1ª VENCIDA PELO JOGADOR
+      + 2ª EMPATE
+      =================================
+
+      Jogador ganha.
+    */
+
+    if (
+      primeira === "jogador" &&
+      segunda === "empate"
+    ) {
+
+      return "jogador";
+
+    }
+
+
+    /*
+      =================================
+      1ª VENCIDA PELO COMPUTADOR
+      + 2ª EMPATE
+      =================================
+
+      Computador ganha.
+    */
+
+    if (
+      primeira === "computador" &&
+      segunda === "empate"
+    ) {
+
+      return "computador";
+
+    }
+
+
+    /*
+      =================================
+      DUAS VAZAS PARA O JOGADOR
+      =================================
+    */
+
+    if (
+      primeira === "jogador" &&
+      segunda === "jogador"
+    ) {
+
+      return "jogador";
+
+    }
+
+
+    /*
+      =================================
+      DUAS VAZAS PARA O COMPUTADOR
+      =================================
+    */
+
+    if (
+      primeira === "computador" &&
+      segunda === "computador"
+    ) {
+
+      return "computador";
+
+    }
+
+
+    /*
+      Se ficou:
+
+      jogador + computador
+
+      ou
+
+      computador + jogador
+
+      precisamos da terceira vaza.
+    */
+
+  }
+
+
+  /* =================================
+     TERCEIRA VAZA
+  ================================= */
+
+  if (
+    resultadosVazas.length >= 3
+  ) {
+
+    const terceira =
+      resultadosVazas[2];
+
+
+    /*
+      =================================
+      3ª JOGADOR
+      =================================
+
+      Jogador ganha a mão.
+    */
+
+    if (
+      terceira === "jogador"
+    ) {
+
+      return "jogador";
+
+    }
+
+
+    /*
+      =================================
+      3ª COMPUTADOR
+      =================================
+    */
+
+    if (
+      terceira === "computador"
+    ) {
+
+      return "computador";
+
+    }
+
+
+    /*
+      =================================
+      3ª EMPATE
+      =================================
+
+      Quem venceu a primeira ganha.
+    */
+
+    if (
+      terceira === "empate"
+    ) {
+
+      if (
+        primeira === "jogador"
+      ) {
+
+        return "jogador";
+
+      }
+
+
+      if (
+        primeira === "computador"
+      ) {
+
+        return "computador";
+
+      }
+
+
+      /*
+        A primeira também empatou.
+
+        Nesse caso verificamos a segunda.
+      */
+
+      const segunda =
+        resultadosVazas[1];
+
+
+      if (
+        segunda === "jogador"
+      ) {
+
+        return "jogador";
+
+      }
+
+
+      if (
+        segunda === "computador"
+      ) {
+
+        return "computador";
+
+      }
+
+
+      /*
+        =================================
+        EMPATE NAS TRÊS VAZAS
+        =================================
+
+        Ninguém ganha pontos.
+      */
+
+      return "empate";
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
 
 /* =================================
    FINAL DA RODADA
 ================================= */
 
-function finalizarRodada() {
+function finalizarRodada(vencedor) {
 
-  let vencedor;
+  /*
+    =================================
+    TRÊS VAZAS EMPATADAS
+    =================================
 
+    Nenhuma dupla marca pontos.
+  */
 
   if (
-    jogadorVazas >
-    computadorVazas
+    vencedor === "empate"
   ) {
 
-    vencedor = "jogador";
+    statusEl.textContent =
+      "As três vazas empataram! Ninguém marca pontos.";
+
+    log(
+      "As três vazas empataram. Nenhuma dupla marcou pontos."
+    );
+
+
+    /*
+      O maço passa para o próximo jogador.
+
+      Alterna quem começa a próxima mão.
+    */
+
+    proximoComeca =
+      proximoComeca === "jogador"
+        ? "computador"
+        : "jogador";
+
+
+    atualizarTela();
+
+
+    setTimeout(
+      novaRodada,
+      1300
+    );
+
+    return;
 
   }
 
-  else if (
-    computadorVazas >
-    jogadorVazas
+
+  /* =================================
+     JOGADOR GANHOU
+  ================================= */
+
+  if (
+    vencedor === "jogador"
   ) {
-
-    vencedor = "computador";
-
-  }
-
-  else {
-
-    vencedor = "empate";
-
-  }
-
-
-  if (vencedor === "jogador") {
 
     pontosJogador +=
       valorRodada;
 
-
     statusEl.textContent =
       `Você ganhou! +${valorRodada}`;
-
 
     log(
       `Você ganhou ${valorRodada} ponto(s).`
     );
 
   }
+
+
+  /* =================================
+     COMPUTADOR GANHOU
+  ================================= */
 
   else if (
     vencedor === "computador"
@@ -1024,10 +1569,8 @@ function finalizarRodada() {
     pontosComputador +=
       valorRodada;
 
-
     statusEl.textContent =
       `Computador ganhou. +${valorRodada}`;
-
 
     log(
       `Computador ganhou ${valorRodada} ponto(s).`
@@ -1035,21 +1578,13 @@ function finalizarRodada() {
 
   }
 
-  else {
-
-    statusEl.textContent =
-      "Rodada empatada.";
-
-
-    log(
-      "Rodada empatada."
-    );
-
-  }
-
 
   atualizarTela();
 
+
+  /* =================================
+     VERIFICAR FIM DO JOGO
+  ================================= */
 
   if (
     pontosJogador >= 12 ||
@@ -1081,22 +1616,46 @@ function finalizarRodada() {
 
 function proximoValorTruco() {
 
-  if (valorRodada === 1)
+  if (
+    valorRodada === 1
+  ) {
+
     return 3;
 
+  }
 
-  if (valorRodada === 3)
+  if (
+    valorRodada === 3
+  ) {
+
     return 6;
 
+  }
 
-  if (valorRodada === 6)
+  if (
+    valorRodada === 6
+  ) {
+
     return 9;
 
+  }
+
+  if (
+    valorRodada === 9
+  ) {
+
+    return 12;
+
+  }
 
   return 12;
 
 }
 
+
+/* =================================
+   PEDIR TRUCO
+================================= */
 
 function pedirTruco() {
 
@@ -1111,11 +1670,12 @@ function pedirTruco() {
   }
 
 
-  if (valorRodada >= 12) {
+  if (
+    valorRodada >= 12
+  ) {
 
     statusEl.textContent =
       "Já está valendo 12!";
-
 
     return;
 
@@ -1128,20 +1688,35 @@ function pedirTruco() {
 
   esperandoTruco = true;
 
+  trucoSolicitante =
+    "jogador";
+
 
   statusEl.textContent =
     `TRUCO! Vale ${novoValor}!`;
 
-
   log(
-    `Você pediu TRUCO.`
+    "Você pediu TRUCO."
   );
 
 
   atualizarTela();
 
 
+  /*
+    Simula a decisão do computador.
+  */
+
   setTimeout(() => {
+
+    if (
+      jogoTerminou
+    ) {
+
+      return;
+
+    }
+
 
     const aceita =
       Math.random() < 0.78;
@@ -1150,18 +1725,22 @@ function pedirTruco() {
     esperandoTruco = false;
 
 
-    if (aceita) {
+    if (
+      aceita
+    ) {
 
       valorRodada =
         novoValor;
+
+      trucoSolicitante =
+        null;
 
 
       statusEl.textContent =
         `Aceitou! Vale ${valorRodada}.`;
 
-
       log(
-        `Computador aceitou.`
+        "Computador aceitou."
       );
 
 
@@ -1171,13 +1750,22 @@ function pedirTruco() {
 
     else {
 
+      /*
+        Se o computador corre,
+        o jogador recebe o valor
+        atual da rodada.
+      */
+
+      trucoSolicitante =
+        null;
+
+
       pontosJogador +=
         valorRodada;
 
 
       statusEl.textContent =
         "Computador correu!";
-
 
       log(
         "Computador correu."
@@ -1187,10 +1775,25 @@ function pedirTruco() {
       atualizarTela();
 
 
-      setTimeout(
-        novaRodada,
-        1000
-      );
+      if (
+        pontosJogador >= 12
+      ) {
+
+        setTimeout(
+          finalizarJogo,
+          800
+        );
+
+      }
+
+      else {
+
+        setTimeout(
+          novaRodada,
+          1000
+        );
+
+      }
 
     }
 
@@ -1205,11 +1808,25 @@ function pedirTruco() {
 
 function computadorPedeTruco() {
 
+  if (
+    valorRodada >= 12 ||
+    esperandoTruco ||
+    jogoTerminou
+  ) {
+
+    return;
+
+  }
+
+
   const novoValor =
     proximoValorTruco();
 
 
   esperandoTruco = true;
+
+  trucoSolicitante =
+    "computador";
 
 
   statusEl.textContent =
@@ -1217,13 +1834,12 @@ function computadorPedeTruco() {
 
 
   log(
-    `Computador pediu TRUCO.`
+    "Computador pediu TRUCO."
   );
 
 
   acceptBtn.style.display =
     "inline-block";
-
 
   runBtn.style.display =
     "inline-block";
@@ -1235,13 +1851,19 @@ function computadorPedeTruco() {
 
 
 /* =================================
-   ACEITAR
+   ACEITAR TRUCO
 ================================= */
 
 function aceitarTruco() {
 
-  if (!esperandoTruco)
+  if (
+    !esperandoTruco ||
+    trucoSolicitante !== "computador"
+  ) {
+
     return;
+
+  }
 
 
   valorRodada =
@@ -1250,10 +1872,11 @@ function aceitarTruco() {
 
   esperandoTruco = false;
 
+  trucoSolicitante = null;
+
 
   acceptBtn.style.display =
     "none";
-
 
   runBtn.style.display =
     "none";
@@ -1267,6 +1890,10 @@ function aceitarTruco() {
     "Você aceitou o TRUCO."
   );
 
+
+  /*
+    O jogador passa a jogar.
+  */
 
   turno = "jogador";
 
@@ -1282,20 +1909,33 @@ function aceitarTruco() {
 
 function correr() {
 
-  if (!esperandoTruco)
+  if (
+    !esperandoTruco ||
+    trucoSolicitante !== "computador"
+  ) {
+
     return;
+
+  }
 
 
   esperandoTruco = false;
+
+  trucoSolicitante = null;
 
 
   acceptBtn.style.display =
     "none";
 
-
   runBtn.style.display =
     "none";
 
+
+  /*
+    Ao correr de um truco,
+    o adversário recebe o valor
+    que estava valendo antes do aumento.
+  */
 
   pontosComputador +=
     valorRodada;
@@ -1313,10 +1953,25 @@ function correr() {
   atualizarTela();
 
 
-  setTimeout(
-    novaRodada,
-    1000
-  );
+  if (
+    pontosComputador >= 12
+  ) {
+
+    setTimeout(
+      finalizarJogo,
+      800
+    );
+
+  }
+
+  else {
+
+    setTimeout(
+      novaRodada,
+      1000
+    );
+
+  }
 
 }
 
@@ -1329,9 +1984,19 @@ function finalizarJogo() {
 
   jogoTerminou = true;
 
+  esperandoTruco = false;
+
+  trucoSolicitante = null;
+
 
   trucoBtn.disabled = true;
 
+
+  acceptBtn.style.display =
+    "none";
+
+  runBtn.style.display =
+    "none";
 
   newGameBtn.style.display =
     "inline-block";
@@ -1344,7 +2009,6 @@ function finalizarJogo() {
     statusEl.textContent =
       "VOCÊ VENCEU!";
 
-
     log(
       "Você venceu a partida!"
     );
@@ -1355,7 +2019,6 @@ function finalizarJogo() {
 
     statusEl.textContent =
       "COMPUTADOR VENCEU!";
-
 
     log(
       "Computador venceu a partida."
@@ -1379,6 +2042,22 @@ function novoJogo() {
 
   pontosComputador = 0;
 
+  jogoTerminou = false;
+
+  esperandoTruco = false;
+
+  trucoSolicitante = null;
+
+  vencedorUltimaVaza = null;
+
+  vencedorPrimeiraVaza = null;
+
+  numeroVaza = 0;
+
+  resultadosVazas = [];
+
+  proximoComeca = "jogador";
+
 
   newGameBtn.style.display =
     "none";
@@ -1401,10 +2080,8 @@ function log(texto) {
   const linha =
     document.createElement("div");
 
-
   linha.textContent =
     "• " + texto;
-
 
   logEl.prepend(linha);
 

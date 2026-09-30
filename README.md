@@ -2,24 +2,23 @@
 
 Um jogo de Truco simples e responsivo desenvolvido para navegadores, onde o usuário joga contra uma inteligência artificial local. O projeto foi estruturado para carregar instantaneamente, oferecendo uma experiência fluida e sem dependências pesadas de rede.
 
-## 🛠️ Tecnologias Utilizadas
+## 🌐 Acesse o Jogo
+👉 **[Clique aqui para jogar no GitHub Pages](https://bruno18157.github.io/Truco-Web-/)**
 
-* **HTML5:** Estruturação semântica do tabuleiro e das cartas.
-* **CSS3:** Estilização moderna e layout responsivo (Flexbox/Grid).
-* **JavaScript Vanilla:** Lógica do jogo, manipulação do DOM e comportamento da IA.
+---
 
-## ⚙️ Funcionalidades
+## 🛠 Tecnologias
+- **HTML5:** Estruturação.
+- **CSS3:** Estilização e responsividade.
+- **JavaScript Vanilla:** Lógica e IA.
 
-* **Distribuição Automatizada:** Embaralhamento e distribuição aleatória de cartas a cada rodada.
-* **Sistema de Pontuação:** Marcador persistente por partida até atingir 12 pontos.
-* **IA Desafiadora:** Mecânica básica de bot com blefe condicional e tomada de decisão ao comando de Truco.
-* **Design Responsivo:** Interface totalmente adaptada para telas de PC, tablets e celulares.
+## ⚙ Funcionalidades
+- Distribuição aleatória de cartas.
+- Sistema de pontuação até 12 pontos.
+- IA com tomada de decisão e truco.
+- Interface adaptada para diversos dispositivos.
 
-## 🚀 Como Executar o Projeto
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/Bruno18157/Truco-Web-.git
-   ```
-2. Abra a pasta do projeto.
-3. Clique duas vezes no arquivo `index.html` para jogar direto no seu navegador.
+## 🚀 Como Executar Localmente
+1. Clone o repositório: `git clone https://github.com/Bruno18157/Truco-Web-.git`
+2. Abra a pasta.
+3. Abra o arquivo `index.html` no navegador.
